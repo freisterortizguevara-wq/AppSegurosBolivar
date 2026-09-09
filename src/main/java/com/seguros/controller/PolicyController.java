@@ -15,7 +15,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/polizas")
-@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"})
+@CrossOrigin(origins = {
+    "http://localhost:5173", 
+    "http://127.0.0.1:5173",
+    "https://frontend-xi-olive-tg7f1f8b2d.vercel.app",
+    "https://*.vercel.app"
+})
 @RequiredArgsConstructor
 public class PolicyController {
 
