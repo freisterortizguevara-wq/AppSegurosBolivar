@@ -21,6 +21,8 @@ public class AppConfig {
     public FilterRegistrationBean<CorsFilter> corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+        // ⚠️ NO usar addAllowedOrigin("*") con allowCredentials=true
+        // Usar allowedOriginPatterns en su lugar
         config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
