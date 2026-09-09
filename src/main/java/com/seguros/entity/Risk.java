@@ -46,7 +46,3 @@ public class Risk {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
-
-enum RiskStatus {
-    ACTIVE, CANCELLED
-}

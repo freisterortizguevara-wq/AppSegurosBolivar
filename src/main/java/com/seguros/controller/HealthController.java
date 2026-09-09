@@ -1,12 +1,15 @@
 package com.seguros.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"})
 public class HealthController {
 
     @GetMapping("/health")
@@ -14,7 +17,7 @@ public class HealthController {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "OK");
         response.put("timestamp", LocalDateTime.now().toString());
-        response.put("message", "🚀 Seguros Bolívar API funcionando");
+        response.put("message", "Seguros Bolivar API funcionando");
         response.put("version", "1.0.0");
         return response;
     }

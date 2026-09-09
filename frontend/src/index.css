@@ -1,0 +1,85 @@
+/* ============================================
+   ESTILOS GLOBALES - SEGUROS BOLÍVAR
+   ============================================ */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F5F7FA;
+  color: #212529;
+}
+
+.card {
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 51, 102, 0.08) !important;
+}
+
+.badge {
+  font-weight: 600 !important;
+  padding: 6px 14px !important;
+  border-radius: 20px !important;
+  font-size: 0.75rem !important;
+}
+
+.btn {
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.table {
+  font-size: 0.9rem;
+}
+
+.table thead th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-bottom: none;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #E8F0FE;
+}
+
+code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+}
+
+.navbar-brand {
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+.navbar-brand span {
+  font-size: 1.6rem;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F7FA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0066CC;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #003366;
+}

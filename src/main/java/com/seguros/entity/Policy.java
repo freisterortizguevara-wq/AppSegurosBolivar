@@ -60,11 +60,3 @@ public class Policy {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
-
-enum PolicyType {
-    INDIVIDUAL, COLECTIVA
-}
-
-enum PolicyStatus {
-    ACTIVE, RENOVADA, CANCELLED
-}
