@@ -18,6 +18,6 @@ public class SegurosApplication {
                 System.out.println("  " + key)
         );
 
-        System.out.println("🚀 Seguros Bolívar Backend iniciado en http://localhost:8080");
+        System.out.println(" Seguros Bolívar Backend iniciado en http://localhost:8080");
     }
 }

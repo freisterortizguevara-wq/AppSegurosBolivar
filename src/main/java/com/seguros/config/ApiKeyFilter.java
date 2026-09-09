@@ -20,6 +20,13 @@ public class ApiKeyFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        // ✅ Dejar pasar el preflight de CORS sin exigir API key
+        if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            chain.doFilter(request, response);
+            return;
+        }
+
         // Log de todos los headers para depuración
         log.info("📋 Todos los headers recibidos:");
         Enumeration<String> headerNames = httpRequest.getHeaderNames();
