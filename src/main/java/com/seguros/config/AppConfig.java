@@ -20,22 +20,27 @@ public class AppConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:5173");
-        config.addAllowedOrigin("http://127.0.0.1:5173");
+        config.addAllowedOrigin("https://frontend-xi-olive-tg7f1f8b2d.vercel.app");
+        config.addAllowedOrigin("https://*.vercel.app");
+        config.addAllowedOrigin("https://*.vercel.app/*");
         config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+        config.addAllowedMethod("OPTIONS");
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
 
- //   @Bean
- // public FilterRegistrationBean<ApiKeyFilter> apiKeyFilter() {
-    //     FilterRegistrationBean<ApiKeyFilter> registrationBean = new FilterRegistrationBean<>();
-    //  registrationBean.setFilter(new ApiKeyFilter());
-    //  registrationBean.addUrlPatterns("/api/*", "/core-mock/*");
-    //  registrationBean.setOrder(1);
-    //  return registrationBean;
-    // }
+    @Bean
+    public FilterRegistrationBean<ApiKeyFilter> apiKeyFilter() {
+        FilterRegistrationBean<ApiKeyFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new ApiKeyFilter());
+        registrationBean.addUrlPatterns("/api/*", "/core-mock/*");
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
 }
