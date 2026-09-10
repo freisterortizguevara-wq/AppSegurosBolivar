@@ -1,26 +1,64 @@
 /* ============================================
    ESTILOS GLOBALES - SEGUROS BOLÍVAR
+   Paleta corporativa oficial
    ============================================ */
+
+:root {
+  --bolivar-verde: #008457;
+  --bolivar-verde-oscuro: #005C3D;
+  --bolivar-verde-claro: #E6F4EE;
+  --bolivar-dorado: #FFD44D;
+  --bolivar-dorado-claro: #FFE16F;
+  --bolivar-negro: #1A1A1A;
+  --bolivar-gris: #B4B5B7;
+  --bolivar-gris-claro: #F5F7FA;
+}
 
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F5F7FA;
-  color: #212529;
+  background-color: var(--bolivar-gris-claro);
+  color: var(--bolivar-negro);
 }
+
+/* ============================================
+   NAVBAR / MARCA
+   ============================================ */
+
+.navbar {
+  background-color: var(--bolivar-verde) !important;
+}
+
+.navbar-brand {
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+  color: #FFFFFF !important;
+}
+
+.navbar-brand span {
+  font-size: 1.6rem;
+  color: var(--bolivar-dorado) !important;
+}
+
+/* ============================================
+   TARJETAS
+   ============================================ */
 
 .card {
   border-radius: 12px !important;
   border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 51, 102, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 132, 87, 0.10) !important;
 }
 
-.badge {
-  font-weight: 600 !important;
-  padding: 6px 14px !important;
-  border-radius: 20px !important;
-  font-size: 0.75rem !important;
+.card-header {
+  background-color: var(--bolivar-verde-claro) !important;
+  border-bottom: 2px solid var(--bolivar-verde) !important;
+  border-radius: 12px 12px 0 0 !important;
 }
+
+/* ============================================
+   BOTONES
+   ============================================ */
 
 .btn {
   border-radius: 8px !important;
@@ -33,6 +71,77 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Botón primario -> Verde institucional */
+.btn-primary {
+  background-color: var(--bolivar-verde) !important;
+  border-color: var(--bolivar-verde) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--bolivar-verde-oscuro) !important;
+  border-color: var(--bolivar-verde-oscuro) !important;
+}
+
+/* Botón de acción destacada (ej: Renovar) -> Dorado */
+.btn-warning {
+  background-color: var(--bolivar-dorado) !important;
+  border-color: var(--bolivar-dorado) !important;
+  color: var(--bolivar-negro) !important;
+}
+
+.btn-warning:hover {
+  background-color: var(--bolivar-dorado-claro) !important;
+  border-color: var(--bolivar-dorado-claro) !important;
+}
+
+/* Botón secundario / outline */
+.btn-outline-primary {
+  border-color: var(--bolivar-verde) !important;
+  color: var(--bolivar-verde) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--bolivar-verde) !important;
+  color: #FFFFFF !important;
+}
+
+/* ============================================
+   BADGES (Tipo / Estado)
+   ============================================ */
+
+.badge {
+  font-weight: 600 !important;
+  padding: 6px 14px !important;
+  border-radius: 20px !important;
+  font-size: 0.75rem !important;
+}
+
+/* Estado: Activa -> Verde institucional */
+.badge.bg-success {
+  background-color: var(--bolivar-verde) !important;
+}
+
+/* Estado: Cancelada -> se mantiene rojo (semántica universal de alerta) */
+.badge.bg-danger {
+  background-color: #D63447 !important;
+}
+
+/* Tipo: Individual -> Verde oscuro */
+.badge.bg-primary {
+  background-color: var(--bolivar-verde-oscuro) !important;
+}
+
+/* Tipo: Colectiva -> Dorado */
+.badge.bg-warning {
+  background-color: var(--bolivar-dorado) !important;
+  color: var(--bolivar-negro) !important;
+}
+
+/* ============================================
+   TABLA
+   ============================================ */
+
 .table {
   font-size: 0.9rem;
 }
@@ -41,6 +150,8 @@ body {
   font-weight: 600;
   letter-spacing: 0.5px;
   border-bottom: none;
+  background-color: var(--bolivar-verde);
+  color: #FFFFFF;
 }
 
 .table tbody tr {
@@ -48,38 +159,67 @@ body {
 }
 
 .table tbody tr:hover {
-  background-color: #E8F0FE;
+  background-color: var(--bolivar-verde-claro);
+}
+
+/* ============================================
+   FORMULARIOS / SELECTS
+   ============================================ */
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--bolivar-verde) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 132, 87, 0.2) !important;
+}
+
+/* ============================================
+   ENLACES Y TEXTOS DESTACADOS
+   ============================================ */
+
+a {
+  color: var(--bolivar-verde);
+}
+
+a:hover {
+  color: var(--bolivar-verde-oscuro);
+}
+
+.text-primary {
+  color: var(--bolivar-verde) !important;
 }
 
 code {
   font-family: 'Courier New', monospace;
   font-size: 0.8rem;
+  color: var(--bolivar-verde-oscuro);
 }
 
-.navbar-brand {
-  font-size: 1.4rem;
-  letter-spacing: 0.5px;
+/* ============================================
+   FOOTER
+   ============================================ */
+
+footer {
+  color: var(--bolivar-gris) !important;
 }
 
-.navbar-brand span {
-  font-size: 1.6rem;
-}
+/* ============================================
+   SCROLLBAR PERSONALIZADA
+   ============================================ */
 
-/* Scrollbar personalizada */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5F7FA;
+  background: var(--bolivar-gris-claro);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0066CC;
+  background: var(--bolivar-verde);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #003366;
+  background: var(--bolivar-verde-oscuro);
 }
