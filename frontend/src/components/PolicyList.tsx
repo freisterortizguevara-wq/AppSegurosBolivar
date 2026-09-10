@@ -136,16 +136,47 @@ export function PolicyList() {
     }
   };
 
+  // Chip suave: fondo tenue + texto y punto del color principal (look corporativo, no saturado)
+  const Chip = ({ color, label }: { color: string; label: string }) => (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        backgroundColor: `${color}1A`, // ~10% opacidad
+        color,
+        border: `1px solid ${color}40`,
+        borderRadius: '6px',
+        padding: '4px 10px',
+        fontSize: '0.75rem',
+        fontWeight: 700,
+        letterSpacing: '0.2px',
+        lineHeight: 1.2,
+      }}
+    >
+      <span
+        style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          backgroundColor: color,
+          flexShrink: 0,
+        }}
+      />
+      {label}
+    </span>
+  );
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'ACTIVE':
-        return <span className="badge" style={{ backgroundColor: '#28A745' }}>Activa</span>;
+        return <Chip color="#28A745" label="Activa" />;
       case 'RENOVADA':
-        return <span className="badge" style={{ backgroundColor: '#0066CC' }}>Renovada</span>;
+        return <Chip color="#0066CC" label="Renovada" />;
       case 'CANCELLED':
-        return <span className="badge" style={{ backgroundColor: '#DC3545' }}>Cancelada</span>;
+        return <Chip color="#DC3545" label="Cancelada" />;
       default:
-        return <span className="badge bg-secondary">{status}</span>;
+        return <Chip color="#6C757D" label={status} />;
     }
   };
 
@@ -260,13 +291,10 @@ export function PolicyList() {
                       <span className="fw-semibold">{p.clientName}</span>
                     </td>
                     <td>
-                      <span className="badge" style={{
-                        backgroundColor: p.type === 'INDIVIDUAL' ? '#0066CC' : '#FF6B00',
-                        color: 'white',
-                        padding: '6px 12px'
-                      }}>
-                        {p.type}
-                      </span>
+                      <Chip
+                        color={p.type === 'INDIVIDUAL' ? '#0066CC' : '#FF6B00'}
+                        label={p.type}
+                      />
                     </td>
                     <td>{getStatusBadge(p.status)}</td>
                     <td className="text-end fw-semibold" style={{ color: '#003366' }}>
@@ -296,11 +324,7 @@ export function PolicyList() {
                           </button>
                         </div>
                       )}
-                      {p.status === 'CANCELLED' && (
-                        <span className="badge" style={{ backgroundColor: '#6C757D' }}>
-                          Cancelada
-                        </span>
-                      )}
+                      {p.status === 'CANCELLED' && <Chip color="#6C757D" label="Cancelada" />}
                     </td>
                   </tr>
                 ))}
@@ -320,7 +344,7 @@ export function PolicyList() {
 
       <div className="mt-4 text-center text-muted" style={{ fontSize: '0.85rem' }}>
         <hr />
-        <p>Seguros Bolívar - Prueba Técnica Ingeniero Freister Ortiz Guevara</p>
+        <p>Seguros Bolívar - Prueba Técnica</p>
       </div>
     </div>
   );
