@@ -2,6 +2,92 @@ import { useEffect, useState } from 'react';
 import { policyApi } from '../api/policyApi';
 import type { Policy } from '../types';
 
+// ---- Iconos SVG (reemplazan los emojis por algo más profesional) ----
+const IconRefresh = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+    <polyline points="21 3 21 9 15 9" />
+  </svg>
+);
+
+const IconX = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+const IconSearch = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="7" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  </svg>
+);
+
+const IconClipboard = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#003366" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="8" y="2" width="8" height="4" rx="1" />
+    <path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3" />
+    <line x1="9" y1="12" x2="15" y2="12" />
+    <line x1="9" y1="16" x2="15" y2="16" />
+  </svg>
+);
+
+const IconInbox = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0066CC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 12h-6l-2 3h-4l-2-3H2" />
+    <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z" />
+  </svg>
+);
+
+// Logo de marca: escudo estilizado con la estrella original, para usar en el header
+export const BolivarLogo = ({ size = 28 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
+    <path
+      d="M20 2 L36 9 V19 C36 29 29.5 35.5 20 38 C10.5 35.5 4 29 4 19 V9 Z"
+      fill="#F4B400"
+      stroke="#B8860B"
+      strokeWidth="0.5"
+    />
+    <path
+      d="M20 4.3 L34 10.3 V19 C34 27.8 28.3 33.6 20 36 C11.7 33.6 6 27.8 6 19 V10.3 Z"
+      fill="#046A38"
+    />
+    <path
+      d="M20 11 L22.3 16.9 L28.5 17.3 L23.7 21.3 L25.3 27.3 L20 23.9 L14.7 27.3 L16.3 21.3 L11.5 17.3 L17.7 16.9 Z"
+      fill="#F4B400"
+    />
+  </svg>
+);
+
+// ---- Estilos reutilizables para los botones de acción ----
+const actionBtnBase: React.CSSProperties = {
+  color: 'white',
+  border: 'none',
+  padding: '8px 16px',
+  borderRadius: '999px',
+  fontWeight: 600,
+  fontSize: '0.85rem',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '6px',
+  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+  transition: 'transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease',
+  cursor: 'pointer',
+};
+
+const onBtnEnter = (e: React.MouseEvent<HTMLButtonElement>, hoverColor: string) => {
+  e.currentTarget.style.backgroundColor = hoverColor;
+  e.currentTarget.style.transform = 'translateY(-1px)';
+  e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.22)';
+};
+
+const onBtnLeave = (e: React.MouseEvent<HTMLButtonElement>, baseColor: string) => {
+  e.currentTarget.style.backgroundColor = baseColor;
+  e.currentTarget.style.transform = 'translateY(0)';
+  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+};
+
 export function PolicyList() {
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,11 +163,14 @@ export function PolicyList() {
   return (
     <div className="container mt-4">
       <div className="row mb-4">
-        <div className="col-12">
-          <h2 className="fw-bold" style={{ color: '#003366' }}>
-            📋 Gestión de Pólizas
-          </h2>
-          <p className="text-muted">Administre las pólizas de sus clientes</p>
+        <div className="col-12 d-flex align-items-center gap-2">
+          <IconClipboard />
+          <div>
+            <h2 className="fw-bold mb-0" style={{ color: '#003366' }}>
+              Gestión de Pólizas
+            </h2>
+            <p className="text-muted mb-0">Administre las pólizas de sus clientes</p>
+          </div>
         </div>
       </div>
 
@@ -117,17 +206,27 @@ export function PolicyList() {
             </div>
             <div className="col-md-4">
               <button
-                className="btn w-100"
+                className="btn w-100 d-flex align-items-center justify-content-center gap-2"
                 onClick={loadPolicies}
-                style={{ backgroundColor: '#003366', color: 'white' }}
+                style={{
+                  backgroundColor: '#003366',
+                  color: 'white',
+                  borderRadius: '10px',
+                  padding: '10px 0',
+                  fontWeight: 600,
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                  transition: 'all 0.15s ease',
+                }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#0066CC';
+                  e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.22)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#003366';
+                  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
                 }}
               >
-                🔍 Buscar
+                <IconSearch /> Buscar
               </button>
             </div>
           </div>
@@ -161,7 +260,7 @@ export function PolicyList() {
                       <span className="fw-semibold">{p.clientName}</span>
                     </td>
                     <td>
-                      <span className="badge" style={{ 
+                      <span className="badge" style={{
                         backgroundColor: p.type === 'INDIVIDUAL' ? '#0066CC' : '#FF6B00',
                         color: 'white',
                         padding: '6px 12px'
@@ -180,40 +279,20 @@ export function PolicyList() {
                       {p.status !== 'CANCELLED' && (
                         <div className="d-flex gap-2 justify-content-center">
                           <button
-                            className="btn btn-sm"
                             onClick={() => handleRenew(p.id)}
-                            style={{ 
-                              backgroundColor: '#FF6B00', 
-                              color: 'white',
-                              border: 'none',
-                              padding: '6px 14px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#E05A00';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#FF6B00';
-                            }}
+                            style={{ ...actionBtnBase, backgroundColor: '#FF6B00' }}
+                            onMouseEnter={(e) => onBtnEnter(e, '#E05A00')}
+                            onMouseLeave={(e) => onBtnLeave(e, '#FF6B00')}
                           >
-                            🔄 Renovar
+                            <IconRefresh /> Renovar
                           </button>
                           <button
-                            className="btn btn-sm"
                             onClick={() => handleCancel(p.id)}
-                            style={{ 
-                              backgroundColor: '#DC3545', 
-                              color: 'white',
-                              border: 'none',
-                              padding: '6px 14px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#B02A37';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#DC3545';
-                            }}
+                            style={{ ...actionBtnBase, backgroundColor: '#DC3545' }}
+                            onMouseEnter={(e) => onBtnEnter(e, '#B02A37')}
+                            onMouseLeave={(e) => onBtnLeave(e, '#DC3545')}
                           >
-                            ✖ Cancelar
+                            <IconX /> Cancelar
                           </button>
                         </div>
                       )}
@@ -232,8 +311,9 @@ export function PolicyList() {
       </div>
 
       {policies.length === 0 && (
-        <div className="alert alert-info mt-4 text-center" role="alert">
-          <h5>📭 No hay pólizas registradas</h5>
+        <div className="alert alert-info mt-4 text-center d-flex flex-column align-items-center gap-2" role="alert">
+          <IconInbox />
+          <h5 className="mb-0">No hay pólizas registradas</h5>
           <p className="mb-0">Comience creando una nueva póliza</p>
         </div>
       )}
