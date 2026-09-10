@@ -60,32 +60,32 @@ export const BolivarLogo = ({ size = 28 }: { size?: number }) => (
   </svg>
 );
 
-// ---- Estilos reutilizables para los botones de acción ----
+// ---- Estilos reutilizables para los botones de acción (estilo "outline" corporativo) ----
 const actionBtnBase: React.CSSProperties = {
-  color: 'white',
-  border: 'none',
-  padding: '8px 16px',
-  borderRadius: '999px',
+  backgroundColor: '#FFFFFF',
+  border: '1.5px solid',
+  padding: '7px 14px',
+  borderRadius: '6px',
   fontWeight: 600,
-  fontSize: '0.85rem',
+  fontSize: '0.82rem',
   display: 'inline-flex',
   alignItems: 'center',
   gap: '6px',
-  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-  transition: 'transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease',
+  transition: 'background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease',
   cursor: 'pointer',
 };
 
-const onBtnEnter = (e: React.MouseEvent<HTMLButtonElement>, hoverColor: string) => {
-  e.currentTarget.style.backgroundColor = hoverColor;
-  e.currentTarget.style.transform = 'translateY(-1px)';
-  e.currentTarget.style.boxShadow = '0 4px 10px rgba(0,0,0,0.22)';
+// tone: color principal del botón (borde/texto en reposo, fondo al hover)
+const onBtnEnter = (e: React.MouseEvent<HTMLButtonElement>, tone: string) => {
+  e.currentTarget.style.backgroundColor = tone;
+  e.currentTarget.style.color = '#FFFFFF';
+  e.currentTarget.style.boxShadow = `0 2px 8px ${tone}55`;
 };
 
-const onBtnLeave = (e: React.MouseEvent<HTMLButtonElement>, baseColor: string) => {
-  e.currentTarget.style.backgroundColor = baseColor;
-  e.currentTarget.style.transform = 'translateY(0)';
-  e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+const onBtnLeave = (e: React.MouseEvent<HTMLButtonElement>, tone: string) => {
+  e.currentTarget.style.backgroundColor = '#FFFFFF';
+  e.currentTarget.style.color = tone;
+  e.currentTarget.style.boxShadow = 'none';
 };
 
 export function PolicyList() {
@@ -280,16 +280,16 @@ export function PolicyList() {
                         <div className="d-flex gap-2 justify-content-center">
                           <button
                             onClick={() => handleRenew(p.id)}
-                            style={{ ...actionBtnBase, backgroundColor: '#FF6B00' }}
-                            onMouseEnter={(e) => onBtnEnter(e, '#E05A00')}
-                            onMouseLeave={(e) => onBtnLeave(e, '#FF6B00')}
+                            style={{ ...actionBtnBase, borderColor: '#0066CC', color: '#0066CC' }}
+                            onMouseEnter={(e) => onBtnEnter(e, '#0066CC')}
+                            onMouseLeave={(e) => onBtnLeave(e, '#0066CC')}
                           >
                             <IconRefresh /> Renovar
                           </button>
                           <button
                             onClick={() => handleCancel(p.id)}
-                            style={{ ...actionBtnBase, backgroundColor: '#DC3545' }}
-                            onMouseEnter={(e) => onBtnEnter(e, '#B02A37')}
+                            style={{ ...actionBtnBase, borderColor: '#DC3545', color: '#DC3545' }}
+                            onMouseEnter={(e) => onBtnEnter(e, '#DC3545')}
                             onMouseLeave={(e) => onBtnLeave(e, '#DC3545')}
                           >
                             <IconX /> Cancelar
@@ -320,7 +320,7 @@ export function PolicyList() {
 
       <div className="mt-4 text-center text-muted" style={{ fontSize: '0.85rem' }}>
         <hr />
-        <p>Seguros Bolívar - Prueba Técnica</p>
+        <p>Seguros Bolívar - Prueba Técnica Ingeniero Freister Ortiz Guevara</p>
       </div>
     </div>
   );
