@@ -1,184 +1,101 @@
-import { useEffect, useState } from 'react';
-import { policyApi } from '../api/policyApi';
-import type { Policy } from '../types';
+import { useMemo, useState } from 'react';
+import { usePolicies } from '../hooks/usePolicies';
+import { Chip } from './Chip';
+import { StatusChip } from './StatusChip';
+import { IconRefresh, IconX, IconSearch, IconClipboard, IconInbox, IconCopy, IconCheck, IconSort, IconDownload } from './icons';
+import { actionBtnBase, onBtnEnter, onBtnLeave } from '../styles/actionButton';
 
-// ---- Iconos SVG (reemplazan los emojis por algo más profesional) ----
-const IconRefresh = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12a9 9 0 1 1-2.64-6.36" />
-    <polyline points="21 3 21 9 15 9" />
-  </svg>
-);
+type SortKey = 'clientName' | 'canonAmount' | 'premiumAmount';
 
-const IconX = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
-
-const IconSearch = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="7" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-);
-
-const IconClipboard = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#003366" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="8" y="2" width="8" height="4" rx="1" />
-    <path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3" />
-    <line x1="9" y1="12" x2="15" y2="12" />
-    <line x1="9" y1="16" x2="15" y2="16" />
-  </svg>
-);
-
-const IconInbox = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0066CC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 12h-6l-2 3h-4l-2-3H2" />
-    <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z" />
-  </svg>
-);
-
-// Logo de marca: escudo estilizado con la estrella original, para usar en el header
-export const BolivarLogo = ({ size = 28 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-    <path
-      d="M20 2 L36 9 V19 C36 29 29.5 35.5 20 38 C10.5 35.5 4 29 4 19 V9 Z"
-      fill="#F4B400"
-      stroke="#B8860B"
-      strokeWidth="0.5"
-    />
-    <path
-      d="M20 4.3 L34 10.3 V19 C34 27.8 28.3 33.6 20 36 C11.7 33.6 6 27.8 6 19 V10.3 Z"
-      fill="#046A38"
-    />
-    <path
-      d="M20 11 L22.3 16.9 L28.5 17.3 L23.7 21.3 L25.3 27.3 L20 23.9 L14.7 27.3 L16.3 21.3 L11.5 17.3 L17.7 16.9 Z"
-      fill="#F4B400"
-    />
-  </svg>
-);
-
-// ---- Estilos reutilizables para los botones de acción (estilo "outline" corporativo) ----
-const actionBtnBase: React.CSSProperties = {
-  backgroundColor: '#FFFFFF',
-  border: '1.5px solid',
-  padding: '7px 14px',
-  borderRadius: '6px',
-  fontWeight: 600,
-  fontSize: '0.82rem',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  transition: 'background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease',
-  cursor: 'pointer',
-};
-
-// tone: color principal del botón (borde/texto en reposo, fondo al hover)
-const onBtnEnter = (e: React.MouseEvent<HTMLButtonElement>, tone: string) => {
-  e.currentTarget.style.backgroundColor = tone;
-  e.currentTarget.style.color = '#FFFFFF';
-  e.currentTarget.style.boxShadow = `0 2px 8px ${tone}55`;
-};
-
-const onBtnLeave = (e: React.MouseEvent<HTMLButtonElement>, tone: string) => {
-  e.currentTarget.style.backgroundColor = '#FFFFFF';
-  e.currentTarget.style.color = tone;
-  e.currentTarget.style.boxShadow = 'none';
-};
+const currency = (n: number) =>
+  new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 2 }).format(n);
 
 export function PolicyList() {
-  const [policies, setPolicies] = useState<Policy[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filterType, setFilterType] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
+  const {
+    policies,
+    loading,
+    filterType,
+    setFilterType,
+    filterStatus,
+    setFilterStatus,
+    loadPolicies,
+    handleRenew,
+    handleCancel,
+  } = usePolicies();
 
-  useEffect(() => {
-    loadPolicies();
-  }, [filterType, filterStatus]);
+  // --- estado local, solo frontend, no toca el hook ni el backend ---
+  const [query, setQuery] = useState('');
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const loadPolicies = async () => {
-    setLoading(true);
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortDir('asc');
+    }
+  };
+
+  const handleCopy = async (id: string) => {
     try {
-      const response = await policyApi.list(filterType, filterStatus);
-      setPolicies(response.data);
-    } catch (error) {
-      console.error('Error cargando pólizas:', error);
-      alert('Error al cargar pólizas. Asegúrate que el backend esté corriendo.');
-    } finally {
-      setLoading(false);
+      await navigator.clipboard.writeText(id);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 1500);
+    } catch {
+      // portapapeles no disponible; no bloquea la UI
     }
   };
 
-  const handleRenew = async (id: string) => {
-    const ipc = prompt('Ingrese IPC (%) para renovar:', '5.2');
-    if (ipc) {
-      try {
-        await policyApi.renew(id, parseFloat(ipc));
-        loadPolicies();
-        alert('✅ Póliza renovada exitosamente');
-      } catch (error) {
-        alert('❌ Error al renovar póliza');
-      }
+  const visiblePolicies = useMemo(() => {
+    let rows = policies.filter((p) =>
+      p.clientName.toLowerCase().includes(query.toLowerCase())
+    );
+    if (sortKey) {
+      rows = [...rows].sort((a, b) => {
+        const av = a[sortKey];
+        const bv = b[sortKey];
+        const cmp = typeof av === 'number' && typeof bv === 'number'
+          ? av - bv
+          : String(av).localeCompare(String(bv));
+        return sortDir === 'asc' ? cmp : -cmp;
+      });
     }
+    return rows;
+  }, [policies, query, sortKey, sortDir]);
+
+  const summary = useMemo(() => {
+    const total = policies.length;
+    const renovadas = policies.filter((p) => p.status === 'RENOVADA').length;
+    const canceladas = policies.filter((p) => p.status === 'CANCELLED').length;
+    const primaTotal = policies.reduce((sum, p) => sum + p.premiumAmount, 0);
+    return { total, renovadas, canceladas, primaTotal };
+  }, [policies]);
+
+  const exportCsv = () => {
+    const header = ['ID', 'Cliente', 'Tipo', 'Estado', 'Canon', 'Prima'];
+    const rows = visiblePolicies.map((p) => [p.id, p.clientName, p.type, p.status, p.canonAmount, p.premiumAmount]);
+    const csv = [header, ...rows].map((r) => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'polizas.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
-  const handleCancel = async (id: string) => {
-    if (confirm('¿Está seguro de cancelar esta póliza?')) {
-      try {
-        await policyApi.cancel(id);
-        loadPolicies();
-        alert('✅ Póliza cancelada exitosamente');
-      } catch (error) {
-        alert('❌ Error al cancelar póliza');
-      }
-    }
-  };
-
-  // Chip suave: fondo tenue + texto y punto del color principal (look corporativo, no saturado)
-  const Chip = ({ color, label }: { color: string; label: string }) => (
+  const sortIcon = (key: SortKey) => (
     <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        backgroundColor: `${color}1A`, // ~10% opacidad
-        color,
-        border: `1px solid ${color}40`,
-        borderRadius: '6px',
-        padding: '4px 10px',
-        fontSize: '0.75rem',
-        fontWeight: 700,
-        letterSpacing: '0.2px',
-        lineHeight: 1.2,
-      }}
+      className="d-inline-flex align-items-center ms-1"
+      style={{ opacity: sortKey === key ? 1 : 0.5, cursor: 'pointer' }}
+      onClick={() => handleSort(key)}
     >
-      <span
-        style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          backgroundColor: color,
-          flexShrink: 0,
-        }}
-      />
-      {label}
+      <IconSort />
+      {sortKey === key && <small className="ms-1">{sortDir === 'asc' ? '↑' : '↓'}</small>}
     </span>
   );
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'ACTIVE':
-        return <Chip color="#28A745" label="Activa" />;
-      case 'RENOVADA':
-        return <Chip color="#0066CC" label="Renovada" />;
-      case 'CANCELLED':
-        return <Chip color="#DC3545" label="Cancelada" />;
-      default:
-        return <Chip color="#6C757D" label={status} />;
-    }
-  };
 
   if (loading) {
     return (
@@ -197,12 +114,28 @@ export function PolicyList() {
         <div className="col-12 d-flex align-items-center gap-2">
           <IconClipboard />
           <div>
-            <h2 className="fw-bold mb-0" style={{ color: '#003366' }}>
-              Gestión de Pólizas
-            </h2>
-            <p className="text-muted mb-0">Administre las pólizas de sus clientes</p>
+          <p className="text-muted mb-0">Administre las pólizas de sus clientes</p>
           </div>
         </div>
+      </div>
+
+      {/* Tarjetas de resumen */}
+      <div className="row g-3 mb-4">
+        {[
+          { label: 'Total de pólizas', value: summary.total, color: '#003366' },
+          { label: 'Renovadas', value: summary.renovadas, color: '#0066CC' },
+          { label: 'Canceladas', value: summary.canceladas, color: '#DC3545' },
+          { label: 'Prima total', value: currency(summary.primaTotal), color: '#003366' },
+        ].map((card) => (
+          <div className="col-6 col-md-3" key={card.label}>
+            <div className="card shadow-sm h-100">
+              <div className="card-body">
+                <p className="text-muted mb-1" style={{ fontSize: '0.8rem' }}>{card.label}</p>
+                <p className="mb-0 fw-bold" style={{ fontSize: '1.4rem', color: card.color }}>{card.value}</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="card shadow-sm mb-4" style={{ borderColor: '#003366', borderWidth: '2px' }}>
@@ -264,6 +197,27 @@ export function PolicyList() {
         </div>
       </div>
 
+      {/* Buscador por cliente + exportar CSV (client-side, no toca el backend) */}
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div className="position-relative" style={{ maxWidth: '280px', width: '100%' }}>
+          <IconSearch />
+          <input
+            type="text"
+            className="form-control ps-4"
+            placeholder="Buscar cliente..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={{ borderColor: '#0066CC' }}
+          />
+        </div>
+        <button
+          className="btn btn-outline-secondary d-flex align-items-center gap-2"
+          onClick={exportCsv}
+        >
+          <IconDownload /> Exportar CSV
+        </button>
+      </div>
+
       <div className="card shadow-sm">
         <div className="card-body p-0">
           <div className="table-responsive">
@@ -271,21 +225,33 @@ export function PolicyList() {
               <thead style={{ backgroundColor: '#003366', color: 'white' }}>
                 <tr>
                   <th className="py-3 px-4">ID</th>
-                  <th className="py-3">Cliente</th>
+                  <th className="py-3" style={{ cursor: 'pointer' }} onClick={() => handleSort('clientName')}>
+                    Cliente {sortIcon('clientName')}
+                  </th>
                   <th className="py-3">Tipo</th>
                   <th className="py-3">Estado</th>
-                  <th className="py-3 text-end">Canon</th>
-                  <th className="py-3 text-end">Prima</th>
+                  <th className="py-3 text-end" style={{ cursor: 'pointer' }} onClick={() => handleSort('canonAmount')}>
+                    Canon {sortIcon('canonAmount')}
+                  </th>
+                  <th className="py-3 text-end" style={{ cursor: 'pointer' }} onClick={() => handleSort('premiumAmount')}>
+                    Prima {sortIcon('premiumAmount')}
+                  </th>
                   <th className="py-3 text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {policies.map((p) => (
+                {visiblePolicies.map((p) => (
                   <tr key={p.id} className="align-middle">
                     <td className="px-4">
-                      <code className="text-muted" style={{ fontSize: '0.8rem' }}>
+                      <button
+                        className="btn btn-sm btn-light d-inline-flex align-items-center gap-1"
+                        onClick={() => handleCopy(p.id)}
+                        title="Copiar ID completo"
+                        style={{ fontSize: '0.75rem', fontFamily: 'monospace' }}
+                      >
                         {p.id.slice(0, 8)}...
-                      </code>
+                        {copiedId === p.id ? <IconCheck /> : <IconCopy />}
+                      </button>
                     </td>
                     <td>
                       <span className="fw-semibold">{p.clientName}</span>
@@ -296,12 +262,14 @@ export function PolicyList() {
                         label={p.type}
                       />
                     </td>
-                    <td>{getStatusBadge(p.status)}</td>
+                    <td>
+                      <StatusChip status={p.status} />
+                    </td>
                     <td className="text-end fw-semibold" style={{ color: '#003366' }}>
-                      ${p.canonAmount.toFixed(2)}
+                      {currency(p.canonAmount)}
                     </td>
                     <td className="text-end" style={{ color: '#6C757D' }}>
-                      ${p.premiumAmount.toFixed(2)}
+                      {currency(p.premiumAmount)}
                     </td>
                     <td className="text-center">
                       {p.status !== 'CANCELLED' && (
@@ -328,6 +296,14 @@ export function PolicyList() {
                     </td>
                   </tr>
                 ))}
+
+                {visiblePolicies.length === 0 && policies.length > 0 && (
+                  <tr>
+                    <td colSpan={7} className="text-center text-muted py-4">
+                      No se encontraron pólizas para "{query}".
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -344,7 +320,7 @@ export function PolicyList() {
 
       <div className="mt-4 text-center text-muted" style={{ fontSize: '0.85rem' }}>
         <hr />
-        <p>Seguros Bolívar - Prueba Técnica</p>
+        <p>Seguros Bolívar - Prueba Técnica Freister L Ortiz</p>
       </div>
     </div>
   );

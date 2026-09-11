@@ -31,7 +31,7 @@ public class AppConfig {
         source.registerCorsConfiguration("/**", config);
 
         FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>(new CorsFilter(source));
-        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); // ✅ se ejecuta PRIMERO
+        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); //  se ejecuta PRIMERO
         return registrationBean;
     }
 
@@ -40,7 +40,7 @@ public class AppConfig {
         FilterRegistrationBean<ApiKeyFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new ApiKeyFilter());
         registrationBean.addUrlPatterns("/api/*", "/core-mock/*");
-        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 1); // ✅ se ejecuta DESPUÉS del CORS
+        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 1); //  se ejecuta DESPUÉS del CORS
         return registrationBean;
     }
 }

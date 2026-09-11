@@ -4,6 +4,7 @@
    ============================================ */
 
 :root {
+  /* Colores de marca */
   --bolivar-verde: #008457;
   --bolivar-verde-oscuro: #005C3D;
   --bolivar-verde-claro: #E6F4EE;
@@ -12,13 +13,86 @@
   --bolivar-negro: #1A1A1A;
   --bolivar-gris: #B4B5B7;
   --bolivar-gris-claro: #F5F7FA;
+  --bolivar-blanco: #FFFFFF;
+
+  /* Semánticos (mapeados a la paleta, no colores genéricos sueltos) */
+  --color-exito: var(--bolivar-verde);
+  --color-peligro: #D63447;
+  --color-peligro-oscuro: #B32236;
+  --color-info: #2E7FBF;
+  --color-secundario: #6C757D;
+
+  /* Tipografía */
+  --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-mono: 'Courier New', monospace;
+
+  /* Espaciado */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+
+  /* Bordes y sombras */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 20px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 20px rgba(0, 132, 87, 0.10);
+  --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.16);
+
+  /* Transiciones */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.15s var(--ease);
+  --transition-base: 0.2s var(--ease);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-base);
   background-color: var(--bolivar-gris-claro);
   color: var(--bolivar-negro);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Selección de texto con marca */
+::selection {
+  background-color: var(--bolivar-verde);
+  color: var(--bolivar-blanco);
+}
+
+/* Estados de foco accesibles y consistentes en toda la app */
+:focus-visible {
+  outline: 2px solid var(--bolivar-verde);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Respeta la preferencia del usuario de reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ============================================
@@ -27,12 +101,18 @@ body {
 
 .navbar {
   background-color: var(--bolivar-verde) !important;
+  box-shadow: var(--shadow-sm);
 }
 
 .navbar-brand {
   font-size: 1.4rem;
   letter-spacing: 0.5px;
-  color: #FFFFFF !important;
+  color: var(--bolivar-blanco) !important;
+  transition: opacity var(--transition-fast);
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
 }
 
 .navbar-brand span {
@@ -40,20 +120,72 @@ body {
   color: var(--bolivar-dorado) !important;
 }
 
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--bolivar-blanco) !important;
+  border-bottom-color: var(--bolivar-dorado);
+}
+
 /* ============================================
    TARJETAS
    ============================================ */
 
 .card {
-  border-radius: 12px !important;
+  border-radius: var(--radius-lg) !important;
   border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 132, 87, 0.10) !important;
+  box-shadow: var(--shadow-md) !important;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card.card-hover:hover {
+  box-shadow: var(--shadow-lg) !important;
+  transform: translateY(-3px);
 }
 
 .card-header {
   background-color: var(--bolivar-verde-claro) !important;
   border-bottom: 2px solid var(--bolivar-verde) !important;
-  border-radius: 12px 12px 0 0 !important;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: var(--space-lg);
+}
+
+/* Estado de carga tipo skeleton, reutilizable en cards de listado */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bolivar-gris-claro);
+  border-radius: var(--radius-sm);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: skeleton-shimmer 1.4s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* ============================================
@@ -61,21 +193,35 @@ body {
    ============================================ */
 
 .btn {
-  border-radius: 8px !important;
+  border-radius: var(--radius-md) !important;
   font-weight: 600 !important;
-  transition: all 0.2s ease !important;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background-color var(--transition-fast), border-color var(--transition-fast) !important;
 }
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn:disabled,
+.btn.disabled {
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Botón primario -> Verde institucional */
 .btn-primary {
   background-color: var(--bolivar-verde) !important;
   border-color: var(--bolivar-verde) !important;
-  color: #FFFFFF !important;
+  color: var(--bolivar-blanco) !important;
 }
 
 .btn-primary:hover {
@@ -95,6 +241,18 @@ body {
   border-color: var(--bolivar-dorado-claro) !important;
 }
 
+/* Botón de peligro (ej: Cancelar póliza) */
+.btn-danger {
+  background-color: var(--color-peligro) !important;
+  border-color: var(--color-peligro) !important;
+  color: var(--bolivar-blanco) !important;
+}
+
+.btn-danger:hover {
+  background-color: var(--color-peligro-oscuro) !important;
+  border-color: var(--color-peligro-oscuro) !important;
+}
+
 /* Botón secundario / outline */
 .btn-outline-primary {
   border-color: var(--bolivar-verde) !important;
@@ -103,7 +261,19 @@ body {
 
 .btn-outline-primary:hover {
   background-color: var(--bolivar-verde) !important;
-  color: #FFFFFF !important;
+  color: var(--bolivar-blanco) !important;
+}
+
+/* Botón "fantasma", útil para acciones secundarias en tablas/cards */
+.btn-link {
+  color: var(--bolivar-verde) !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+
+.btn-link:hover {
+  color: var(--bolivar-verde-oscuro) !important;
+  text-decoration: underline !important;
 }
 
 /* ============================================
@@ -113,18 +283,25 @@ body {
 .badge {
   font-weight: 600 !important;
   padding: 6px 14px !important;
-  border-radius: 20px !important;
+  border-radius: var(--radius-pill) !important;
   font-size: 0.75rem !important;
+  letter-spacing: 0.3px;
 }
 
 /* Estado: Activa -> Verde institucional */
 .badge.bg-success {
-  background-color: var(--bolivar-verde) !important;
+  background-color: var(--color-exito) !important;
 }
 
 /* Estado: Cancelada -> se mantiene rojo (semántica universal de alerta) */
 .badge.bg-danger {
-  background-color: #D63447 !important;
+  background-color: var(--color-peligro) !important;
+}
+
+/* Estado: Pendiente / en revisión -> Dorado */
+.badge.bg-warning {
+  background-color: var(--bolivar-dorado) !important;
+  color: var(--bolivar-negro) !important;
 }
 
 /* Tipo: Individual -> Verde oscuro */
@@ -132,18 +309,30 @@ body {
   background-color: var(--bolivar-verde-oscuro) !important;
 }
 
-/* Tipo: Colectiva -> Dorado */
-.badge.bg-warning {
-  background-color: var(--bolivar-dorado) !important;
-  color: var(--bolivar-negro) !important;
+/* Informativo -> Azul controlado, no genérico de Bootstrap */
+.badge.bg-info {
+  background-color: var(--color-info) !important;
+  color: var(--bolivar-blanco) !important;
+}
+
+/* Neutral / archivada */
+.badge.bg-secondary {
+  background-color: var(--color-secundario) !important;
 }
 
 /* ============================================
    TABLA
    ============================================ */
 
+.table-responsive {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
 .table {
   font-size: 0.9rem;
+  margin-bottom: 0;
 }
 
 .table thead th {
@@ -151,25 +340,69 @@ body {
   letter-spacing: 0.5px;
   border-bottom: none;
   background-color: var(--bolivar-verde);
-  color: #FFFFFF;
+  color: var(--bolivar-blanco);
+  vertical-align: middle;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.table tbody td {
+  vertical-align: middle;
+  padding: var(--space-sm) var(--space-md);
 }
 
 .table tbody tr {
-  transition: background-color 0.2s ease;
+  transition: background-color var(--transition-fast);
 }
 
 .table tbody tr:hover {
   background-color: var(--bolivar-verde-claro);
 }
 
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
 /* ============================================
    FORMULARIOS / SELECTS
    ============================================ */
+
+.form-control,
+.form-select {
+  border-radius: var(--radius-md);
+  border-color: var(--bolivar-gris);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
 
 .form-control:focus,
 .form-select:focus {
   border-color: var(--bolivar-verde) !important;
   box-shadow: 0 0 0 0.2rem rgba(0, 132, 87, 0.2) !important;
+}
+
+.form-control::placeholder {
+  color: var(--bolivar-gris);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: var(--bolivar-gris-claro);
+  opacity: 0.8;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--bolivar-negro);
+  margin-bottom: var(--space-xs);
+}
+
+.invalid-feedback {
+  color: var(--color-peligro);
+  font-weight: 500;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: var(--color-peligro) !important;
 }
 
 /* ============================================
@@ -178,6 +411,7 @@ body {
 
 a {
   color: var(--bolivar-verde);
+  transition: color var(--transition-fast);
 }
 
 a:hover {
@@ -188,10 +422,78 @@ a:hover {
   color: var(--bolivar-verde) !important;
 }
 
+.text-muted {
+  color: var(--bolivar-gris) !important;
+}
+
+.text-danger {
+  color: var(--color-peligro) !important;
+}
+
 code {
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--bolivar-verde-oscuro);
+  background-color: var(--bolivar-verde-claro);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   ALERTAS
+   ============================================ */
+
+.alert {
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  border-left: 4px solid transparent !important;
+}
+
+.alert-success {
+  background-color: var(--bolivar-verde-claro) !important;
+  border-left-color: var(--bolivar-verde) !important;
+  color: var(--bolivar-verde-oscuro) !important;
+}
+
+.alert-danger {
+  background-color: #FCEBED !important;
+  border-left-color: var(--color-peligro) !important;
+  color: var(--color-peligro-oscuro) !important;
+}
+
+.alert-warning {
+  background-color: #FFF8E1 !important;
+  border-left-color: var(--bolivar-dorado) !important;
+  color: #8A6D00 !important;
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+
+.pagination .page-link {
+  color: var(--bolivar-verde);
+  border-color: var(--bolivar-gris-claro);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--bolivar-verde);
+  border-color: var(--bolivar-verde);
+}
+
+.pagination .page-link:hover {
+  background-color: var(--bolivar-verde-claro);
+  color: var(--bolivar-verde-oscuro);
+}
+
+/* ============================================
+   TOOLTIPS
+   ============================================ */
+
+.tooltip .tooltip-inner {
+  background-color: var(--bolivar-negro);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
 }
 
 /* ============================================
@@ -200,11 +502,25 @@ code {
 
 footer {
   color: var(--bolivar-gris) !important;
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: var(--bolivar-gris);
+}
+
+footer a:hover {
+  color: var(--bolivar-blanco);
 }
 
 /* ============================================
    SCROLLBAR PERSONALIZADA
    ============================================ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bolivar-verde) var(--bolivar-gris-claro);
+}
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -222,4 +538,26 @@ footer {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--bolivar-verde-oscuro);
+}
+
+/* ============================================
+   IMPRESIÓN
+   ============================================ */
+
+@media print {
+  .navbar,
+  .btn,
+  footer,
+  .pagination {
+    display: none !important;
+  }
+
+  body {
+    background: var(--bolivar-blanco);
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 1px solid var(--bolivar-gris) !important;
+  }
 }

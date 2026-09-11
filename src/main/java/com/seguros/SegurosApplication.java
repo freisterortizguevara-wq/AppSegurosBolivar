@@ -13,11 +13,13 @@ public class SegurosApplication {
 
         // Listar todos los endpoints registrados
         RequestMappingHandlerMapping mapping = context.getBean(RequestMappingHandlerMapping.class);
-        System.out.println("📋 ENDPOINTS REGISTRADOS:");
+        System.out.println(" ENDPOINTS REGISTRADOS:");
         mapping.getHandlerMethods().forEach((key, value) ->
                 System.out.println("  " + key)
         );
 
-        System.out.println(" Seguros Bolívar Backend iniciado en http://localhost:8080");
+       // System.out.println(" Seguros Bolívar Backend iniciado en http://localhost:8080");
+        System.out.println(" Seguros Bolívar Backend iniciado en https://appsegurosbolivar-backend.onrender.com");
+
     }
 }

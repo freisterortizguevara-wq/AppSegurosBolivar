@@ -35,7 +35,7 @@ export function usePolicies() {
       try {
         await policyApi.renew(id, parseFloat(ipc));
         loadPolicies();
-        alert('✅ Póliza renovada exitosamente');
+        alert(' Póliza renovada exitosamente');
       } catch (error) {
         alert('❌ Error al renovar póliza');
       }
@@ -47,7 +47,7 @@ export function usePolicies() {
       try {
         await policyApi.cancel(id);
         loadPolicies();
-        alert('✅ Póliza cancelada exitosamente');
+        alert(' Póliza cancelada exitosamente');
       } catch (error) {
         alert('❌ Error al cancelar póliza');
       }
